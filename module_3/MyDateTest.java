@@ -1,48 +1,42 @@
-public class MyDateTest {
-    public static void main(String[] args) {
-        // Test default constructor
-        MyDate epoch = new MyDate();
-        System.out.println("Epoch date (should be 1/1/1970): " + epoch);
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-        // Test copy constructor
-        MyDate copy = new MyDate(epoch);
-        System.out.println("Copy of epoch: " + copy);
+class MyDateTest {
 
-        // Test a valid date: Feb 29, 2024 (leap year)
-        MyDate leap = new MyDate(29, 2, 2024);
-        System.out.println("Leap date: " + leap);
+    @Test
+    void testIsLeapYear() {
+        // Typical leap years
+        assertTrue(MyDate.isLeapYear(2000));
+        assertTrue(MyDate.isLeapYear(2024));
 
-        // Test non-leap year invalid date
-        try {
-            MyDate invalid = new MyDate(29, 2, 2023);
-            System.out.println("Created invalid leap date: " + invalid);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Caught expected exception (non-leap): " + e.getMessage());
-        }
+        // Typical non-leap years
+        assertFalse(MyDate.isLeapYear(1900));
+        assertFalse(MyDate.isLeapYear(2023));
 
-        // Test invalid month
-        try {
-            MyDate badMonth = new MyDate(10, 15, 2025);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Caught invalid month: " + e.getMessage());
-        }
+        // Invalid years
+        assertThrows(IllegalArgumentException.class, () -> MyDate.isLeapYear(0));
+        assertThrows(IllegalArgumentException.class, () -> MyDate.isLeapYear(10000));
+    }
 
-        // Test invalid day
-        try {
-            MyDate badDay = new MyDate(31, 4, 2025);  // April has 30 days
-        } catch (IllegalArgumentException e) {
-            System.out.println("Caught invalid day: " + e.getMessage());
-        }
+    @Test
+    void testToJulianNumber() {
+        // Example date: January 1, 2000
+        int julian = MyDate.convertDateToJulian(1, 1, 2000);
+        assertEquals(2451545, julian);
 
-        // Test invalid year
-        try {
-            MyDate badYear = new MyDate(1, 1, 0);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Caught invalid year: " + e.getMessage());
-        }
+        // Example date: December 31, 1999
+        julian = MyDate.convertDateToJulian(31, 12, 1999);
+        assertEquals(2451544, julian);
+    }
 
-        // Edge test: getLastDayOfMonth
-        System.out.println("Last day of Feb 2024 should be 29: " + MyDate.getLastDayOfMonth(2, 2024));
-        System.out.println("Last day of Feb 2023 should be 28: " + MyDate.getLastDayOfMonth(2, 2023));
+    @Test
+    void testFromJulianNumber() {
+        // Example Julian number: 2451545 → January 1, 2000
+        int[] date = MyDate.fromJulianNumber(2451545);
+        assertArrayEquals(new int[]{1, 1, 2000}, date);
+
+        // Example Julian number: 2451544 → December 31, 1999
+        date = MyDate.fromJulianNumber(2451544);
+        assertArrayEquals(new int[]{31, 12, 1999}, date);
     }
 }
