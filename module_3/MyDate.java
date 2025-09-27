@@ -1,12 +1,12 @@
 public class MyDate {
+
     private int julianNumber;
 
-    /** Default constructor: January 1, 1970 (epoch). */
     public MyDate() {
         this.julianNumber = toJulianNumber(1, 1, 1970);
     }
 
-    /** Copy constructor. Throws IllegalArgumentException if null passed. */
+    /* Creates a new MyDate from an existing MyDate */
     public MyDate(MyDate date) {
         if (date == null) {
             throw new IllegalArgumentException("Date cannot be null.");
@@ -14,78 +14,122 @@ public class MyDate {
         this.julianNumber = date.julianNumber;
     }
 
-    /** Constructs a date with day, month, year, validating input. */
+    /**
+     * Creates a new MyDate with day, month, year, validating input.
+     */
     public MyDate(int day, int month, int year) {
         validateDate(day, month, year);
         this.julianNumber = toJulianNumber(day, month, year);
     }
 
-    /** Returns the day of month for this date. */
+    /**
+     * Returns the day of month for this date.
+     */
     public int getDay() {
-        return fromJulianNumber()[0];
+        int[] date = fromJulianNumber();
+        return date[0];
     }
 
-    /** Returns the month for this date. */
+    /**
+     * Returns the month for this date.
+     */
     public int getMonth() {
-        return fromJulianNumber()[1];
+        int[] date = fromJulianNumber();
+        return date[1];
     }
 
-    /** Returns the year for this date. */
+    /**
+     * Returns the year for this date.
+     */
     public int getYear() {
-        return fromJulianNumber()[2];
+        int[] date = fromJulianNumber();
+        return date[2];
     }
 
-    /** Returns whether a given year is a leap year. */
+    /**
+     * Returns true if this MyDate represents a date in a leap year 
+     */
     public static boolean isLeapYear(int year) {
+        //Input validation for year
+        if (year < 1 || year > 9999) {
+            throw new IllegalArgumentException("Invalid year for leap check: " + year + ". Use 1 to 9999.");
+        }
+
         return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
     }
 
-    /** Returns last valid day for a given month/year, or throws if month invalid. */
+    /**
+     * Returns last valid day for a given month/year, or throws if month
+     * invalid.
+     */
     public static int getLastDayOfMonth(int month, int year) {
+        //Input validaion for year
+        if (year < 1 || year > 9999) {
+            throw new IllegalArgumentException("Invalid year: " + year + ". Year must be 1 to 9999");
+        }
+
         switch (month) {
-            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
                 return 31;
-            case 4: case 6: case 9: case 11:
+            case 4:
+            case 6:
+            case 9:
+            case 11:
                 return 30;
             case 2:
                 return isLeapYear(year) ? 29 : 28;
             default:
-                throw new IllegalArgumentException("Invalid month: " + month + ". Must be 1–12.");
+                throw new IllegalArgumentException("Invalid month: " + month + ". Must be 1 to 12.");
         }
     }
 
-    /** Converts a Gregorian (day, month, year) to a Julian Day Number. */
+    /**
+     * Converts gregorian 3-value (day/month/year) date to julian.
+     *
+     * @param day The day of the month (1-31)
+     * @param month The month of the year (1-12)
+     * @param year The year
+     * @return Julian date as an integer
+     */
     private static int toJulianNumber(int day, int month, int year) {
-        int a = (14 - month) / 12;
-        int y = year + 4800 - a;
-        int m = month + 12 * a - 3;
-        int jdn = day + (153 * m + 2) / 5
-                  + 365 * y
-                  + y / 4
-                  - y / 100
-                  + y / 400
-                  - 32045;
-        return jdn;
+        int jd = ((1461 * (year + 4800 + (month - 14) / 12)) / 4)
+                + ((367 * (month - 2 - 12 * ((month - 14) / 12))) / 12)
+                - ((3 * ((year + 4900 + (month - 14) / 12) / 100)) / 4)
+                + day - 32075;
+
+        return jd;
     }
 
-    /** Converts this object's julianNumber to [day, month, year]. */
+    /**
+     * Converts this object's julianNumber to [day, month, year].
+     */
     private int[] fromJulianNumber() {
-        int j = this.julianNumber;
-        int a = j + 32044;
-        int b = (4 * a + 3) / 146097;
-        int c = a - (146097 * b) / 4;
-        int d = (4 * c + 3) / 1461;
-        int e = c - (1461 * d) / 4;
-        int m = (5 * e + 2) / 153;
+        // Julian Day Number to convert
+        int jd = this.julianNumber;
 
-        int day = e - (153 * m + 2) / 5 + 1;
-        int month = m + 3 - 12 * (m / 10);
-        int year = 100 * b + d - 4800 + (m / 10);
+        int l = jd + 68569;
+        int n = 4 * l / 146097;
+        l = l - (146097 * n + 3) / 4;
+        int i = (4000 * (l + 1)) / 1461001;
+        l = l - (1461 * i) / 4 + 31;
+        int j = (80 * l) / 2447;
+        int day = l - (2447 * j) / 80;
+        l = j / 11;
+        int month = j + 2 - (12 * l);
+        int year = 100 * (n - 49) + i + l;
 
-        return new int[]{ day, month, year };
+        return new int[]{day, month, year};
     }
 
-    /** Validates day, month, and year */
+    /**
+     * Validates day, month, and year
+     */
     private static void validateDate(int day, int month, int year) {
         if (year < 1 || year > 9999) {
             throw new IllegalArgumentException("Year out of range: " + year);
@@ -99,11 +143,4 @@ public class MyDate {
                     + " for month " + month + " in year " + year);
         }
     }
-
-    /**option for debugging*/
-    @Override
-    public String toString() {
-        return getDay() + "/" + getMonth() + "/" + getYear();
-    }
 }
-
