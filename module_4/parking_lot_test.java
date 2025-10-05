@@ -1,10 +1,12 @@
+package tests;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParkingLotTest {
 
     @Test
-    public void testCarEntry() {
+    void testCarEntry() {
         Address addr = new Address("456 Elm St", "", "Aurora", "CO", "80010");
         ParkingLot lot = new ParkingLot("L001", addr, 2);
 
