@@ -1,3 +1,5 @@
+package parking;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,3 +29,4 @@ public class ParkingLot {
         return "ParkingLot [id=" + lotId + ", address=" + address.getAddressInfo() + ", capacity=" + capacity + "]";
     }
 }
+
