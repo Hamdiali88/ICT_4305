@@ -1,8 +1,14 @@
-package tests;
+package parking.tests;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+
+import parking.Car;
+import parking.CarType;
+import parking.Customer;
+import parking.ParkingLot;
+import parking.Address;
 
 public class CarTest {
 
