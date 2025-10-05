@@ -14,7 +14,8 @@ public class Address {
     }
 
     public String getAddressInfo() {
-        return streetAddress1 + ", " + (streetAddress2 != null ? streetAddress2 + ", " : "")
+        return streetAddress1 + ", " + (streetAddress2 != null && !streetAddress2.isEmpty() ? streetAddress2 + ", " : "")
                 + city + ", " + state + " " + zipCode;
     }
 }
+
