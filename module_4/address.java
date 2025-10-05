@@ -1,3 +1,5 @@
+package parking;
+
 public class Address {
     private String streetAddress1;
     private String streetAddress2;
