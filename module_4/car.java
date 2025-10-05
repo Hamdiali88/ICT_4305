@@ -26,3 +26,4 @@ public class Car {
         return "Car [license=" + license + ", type=" + type + ", permit=" + permit + "]";
     }
 }
+
