@@ -1,3 +1,5 @@
+package parking;
+
 import java.time.LocalDate;
 
 public class Car {
@@ -26,4 +28,3 @@ public class Car {
         return "Car [license=" + license + ", type=" + type + ", permit=" + permit + "]";
     }
 }
-
